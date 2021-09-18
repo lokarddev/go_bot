@@ -39,7 +39,6 @@ func WebhookHandler(c *gin.Context) {
 	}
 	dispatcher := InitDispatcher(bot, &update)
 	dispatcher.callService()
-
 }
 
 //message := tgbotapi.NewMessage(update.Message.Chat.ID, "Welcome to task bot, stranger!")
