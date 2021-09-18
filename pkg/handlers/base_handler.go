@@ -1,9 +1,8 @@
-package pkg
+package handlers
 
 import (
 	"GoBot/configs"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
@@ -34,11 +33,13 @@ func WebhookHandler(c *gin.Context) {
 	if err != nil {
 		logrus.Error(err)
 	}
-
-	fmt.Println(update.Message.Text)
-	if update.Message.Text == "test" {
-		message := tgbotapi.NewMessage(update.Message.Chat.ID, "pong")
-		_, err := bot.Send(message)
+	switch update.Message.Text {
+	case "/start":
+		message := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello motor")
+		message.BaseChat.ReplyMarkup = tgbotapi.NewReplyKeyboard(
+			tgbotapi.NewKeyboardButtonRow(
+				tgbotapi.NewKeyboardButton("test")))
+		_, err = bot.Send(message)
 		if err != nil {
 			return
 		}

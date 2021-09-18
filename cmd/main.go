@@ -2,7 +2,7 @@ package main
 
 import (
 	"GoBot/configs"
-	"GoBot/pkg"
+	"GoBot/pkg/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -16,7 +16,7 @@ func main() {
 	router := gin.New()
 	router.Use(gin.Logger())
 	configs.SetHook()
-	router.POST("/"+configs.Token, pkg.WebhookHandler)
+	router.POST("/"+configs.Token, handlers.WebhookHandler)
 	err := router.Run(":" + port)
 	if err != nil {
 		logrus.Error(err)
