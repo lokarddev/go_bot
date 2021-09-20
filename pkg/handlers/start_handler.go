@@ -14,7 +14,7 @@ func (h *ConversationHandler) StartHandler() {
 	switch h.triggerHandler(h.Ctx) {
 	case true:
 		service := services.StartService{Bot: h.Bot, Ctx: h.Ctx}
-		service.SomeAction()
+		service.ShareService()
 	case false:
 		return
 	}

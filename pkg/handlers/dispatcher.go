@@ -26,5 +26,7 @@ func (d *Dispatcher) callService() {
 func InitDispatcher(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *Dispatcher {
 	dispatcher := &Dispatcher{}
 	dispatcher.attach(NewConversationHandler(bot, ctx))
+	dispatcher.attach(NewContactHandler(bot, ctx))
+	dispatcher.attach(NewMenuHandler(bot, ctx))
 	return dispatcher
 }
