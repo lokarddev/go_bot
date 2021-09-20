@@ -9,6 +9,7 @@ import (
 
 func main() {
 	configs.InitEnvVariables()
+	configs.InitDB()
 	port := configs.Port
 	if port == "" {
 		logrus.Fatal("$PORT must be set")

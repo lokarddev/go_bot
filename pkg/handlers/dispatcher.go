@@ -29,7 +29,7 @@ func InitDispatcher(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *Dispatcher {
 	dispatcher.attach(NewContactHandler(bot, ctx))
 	dispatcher.attach(NewMenuHandler(bot, ctx))
 	dispatcher.attach(NewDashboardHandler(bot, ctx))
-	//dispatcher.attach(NewAllTasksHandler(bot, ctx))
-	//dispatcher.attach(NewMyTasksHandler(bot, ctx))
+	dispatcher.attach(NewAllTasksHandler(bot, ctx))
+	dispatcher.attach(NewMyTasksHandler(bot, ctx))
 	return dispatcher
 }
