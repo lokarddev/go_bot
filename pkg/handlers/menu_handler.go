@@ -23,8 +23,6 @@ func (h *MenuHandler) StartHandler() {
 		case pkg.DashboardKey:
 			service.DashboardService()
 		}
-	} else {
-		pkg.UnavailableInput(h.Bot, h.Ctx)
 	}
 }
 
@@ -32,6 +30,7 @@ func (h *MenuHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 	switch pkg.MenuPermissions[ctx.Message.Text] {
 	case "":
 		logrus.Error(pkg.UnavailableInputMessage)
+		pkg.UnavailableInput(h.Bot, h.Ctx)
 		return false
 	default:
 		return true
