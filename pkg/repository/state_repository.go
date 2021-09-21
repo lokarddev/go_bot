@@ -18,7 +18,8 @@ func (r *CheckStateRepo) IsValid(ctx tgbotapi.Update) error {
 }
 
 func (r *CheckStateRepo) SetState(ctx tgbotapi.Update, user models.BotUser) error {
-
+	//var state models.State
+	//query := fmt.Sprintf("SELECT * FROM %s WHERE ")
 	return nil
 }
 

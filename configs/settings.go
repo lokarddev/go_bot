@@ -44,14 +44,15 @@ var (
 	TaskTable      = "task"
 )
 
+// InitEnvVariables Environment variables setup
 func InitEnvVariables() {
 	err := godotenv.Load()
 	if err != nil {
-		logrus.Warning("Error loading .env file")
+		logrus.Warning("Error loading .env file, continue without it.")
 	}
 	_, err = godotenv.Read()
 	if err != nil {
-		logrus.Info(".env file cannot be read")
+		logrus.Info(".env file cannot be read, continue without it.")
 	}
 
 	Address = os.Getenv("HOST")
@@ -68,6 +69,7 @@ func InitEnvVariables() {
 	DbSsl = os.Getenv("DB_SSL")
 }
 
+// SetHook Webhook setup, calling every time the server starts
 func SetHook() {
 	bot, err := tgbotapi.NewBotAPI(Token)
 	if err != nil {
@@ -81,6 +83,7 @@ func SetHook() {
 	}
 }
 
+// NewPostgresDB Base setup to sqlx connection
 func NewPostgresDB(cfg DbConfig) (*sqlx.DB, error) {
 	db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.SSLMode))
@@ -95,6 +98,7 @@ func NewPostgresDB(cfg DbConfig) (*sqlx.DB, error) {
 	return db, nil
 }
 
+// InitDB Initialize configs of database
 func InitDB() {
 	database, err := NewPostgresDB(DbConfig{
 		Host:     DbHost,

@@ -3,10 +3,13 @@ package models
 import "time"
 
 type BotUser struct {
-	ID      int       `json:"id"`
-	Phone   string    `json:"phone"`
-	Created time.Time `json:"created_at"`
-	Updated time.Time `json:"updated_at"`
+	ID         int       `json:"id"`
+	Firstname  string    `json:"first_name"`
+	Lastname   string    `json:"last_name"`
+	TelegramID string    `json:"t_id"`
+	Phone      string    `json:"phone"`
+	Created    time.Time `json:"created_at"`
+	Updated    time.Time `json:"updated_at"`
 }
 
 type Task struct {
@@ -16,6 +19,7 @@ type Task struct {
 	Status      string    `json:"status"`
 	Created     time.Time `json:"created_at"`
 	Updated     time.Time `json:"updated_at"`
+	BotUserId   int       `json:"bot_user_id"`
 }
 
 type DashBoard struct {
