@@ -14,18 +14,26 @@ type MenuService struct {
 func (s *MenuService) AllTasksService() {
 	message := tgbotapi.NewMessage(s.Ctx.Message.Chat.ID, "All tasks")
 	inline := tgbotapi.NewMessage(s.Ctx.Message.Chat.ID, "TaskList")
-	inline.BaseChat.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Test all task", "wq")))
+
+	baseRecords := []string{"record1", "record2"}
+
+	var buttons [][]tgbotapi.InlineKeyboardButton
+
+	for _, value := range baseRecords {
+		butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData("Test all task", value))
+		buttons = append(buttons, butt)
+	}
+
+	inline.BaseChat.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(buttons...)
 	_, err := s.Bot.Send(inline)
 	if err != nil {
-		return
+		logrus.Error(err)
 	}
 
 	message.BaseChat.ReplyMarkup = pkg.AllTasksKeyboard
 	_, err = s.Bot.Send(message)
 	if err != nil {
-		return
+		logrus.Error(err)
 	}
 }
 

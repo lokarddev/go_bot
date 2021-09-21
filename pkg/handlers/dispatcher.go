@@ -19,11 +19,11 @@ func (d *Dispatcher) attach(service BaseHandler) {
 
 func (d *Dispatcher) callService() {
 	for _, service := range d.services {
-		service.StartHandler()
+		go service.StartHandler()
 	}
 }
 
-func InitDispatcher(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *Dispatcher {
+func InitHandlerDispatcher(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *Dispatcher {
 	dispatcher := &Dispatcher{}
 	dispatcher.attach(NewConversationHandler(bot, ctx))
 	dispatcher.attach(NewContactHandler(bot, ctx))

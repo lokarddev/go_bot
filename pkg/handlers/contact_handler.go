@@ -24,12 +24,15 @@ func (h *ContactHandler) StartHandler() {
 }
 
 func (h *ContactHandler) triggerHandler(ctx *tgbotapi.Update) bool {
-	switch ctx.Message.Contact {
-	case nil:
-		return false
-	default:
-		return true
+	if ctx.Message != nil {
+		switch ctx.Message.Contact {
+		case nil:
+			return false
+		default:
+			return true
+		}
 	}
+	return false
 }
 
 func NewContactHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *ContactHandler {

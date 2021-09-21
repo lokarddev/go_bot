@@ -21,12 +21,12 @@ func (h *ConversationHandler) StartHandler() {
 }
 
 func (h *ConversationHandler) triggerHandler(ctx *tgbotapi.Update) bool {
-	switch ctx.Message.Text {
-	case "/start":
-		return true
-	default:
-		return false
+	if ctx.Message != nil {
+		if ctx.Message.Text == "/start" {
+			return true
+		}
 	}
+	return false
 }
 
 func NewConversationHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *ConversationHandler {
