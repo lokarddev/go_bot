@@ -45,30 +45,30 @@ func (h *MenuHandler) StartHandler() {
 
 func (h *MenuHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 	ValidState := models.State{Current: pkg.StatePosition["Menu"]}
-
-	user, err := repository.GetUser(ctx)
-	if err != nil {
-		logrus.Error(err)
-		return false
-	}
-	state, err := repository.GetState(user)
-	if err != nil {
-		logrus.Error(err)
-		return false
-	}
-	valid, err := repository.IsValid(state, ValidState)
-	if valid {
-		switch pkg.MenuPermissions[ctx.Message.Text] {
-		case "":
-			logrus.Error(pkg.UnavailableInputMessage)
-			pkg.UnavailableInput(h.Bot, h.Ctx)
+	if repository.UserExists(ctx) == true {
+		user, err := repository.GetUser(ctx)
+		if err != nil {
+			logrus.Error(err)
 			return false
-		default:
-			return true
 		}
-	} else {
-		return false
+		state, err := repository.GetState(user)
+		if err != nil {
+			logrus.Error(err)
+			return false
+		}
+		valid, err := repository.IsValid(state, ValidState)
+		if valid {
+			switch pkg.MenuPermissions[ctx.Message.Text] {
+			case "":
+				return false
+			default:
+				return true
+			}
+		} else {
+			return false
+		}
 	}
+	return false
 }
 
 func NewMenuHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *MenuHandler {

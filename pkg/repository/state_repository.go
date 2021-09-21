@@ -49,16 +49,32 @@ func SetState(ctx *tgbotapi.Update, state models.State) error {
 			return err
 		}
 	}
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func GetUser(ctx *tgbotapi.Update) (models.BotUser, error) {
 	var user models.BotUser
-	query := fmt.Sprintf("SELECT * FROM %s WHERE phone = $1", configs.BotUserTable)
-	err := configs.DB.Get(&user, query, ctx.Message.Contact.PhoneNumber)
+	Id := ctx.Message.From.ID
+	query := fmt.Sprintf("SELECT * FROM %s WHERE t_id = $1", configs.BotUserTable)
+	err := configs.DB.Get(&user, query, Id)
 	if err != nil {
 		logrus.Error(err)
 		return user, err
 	}
 	return user, nil
+}
+
+func UserExists(ctx *tgbotapi.Update) bool {
+	var user models.BotUser
+	Id := ctx.Message.From.ID
+	query := fmt.Sprintf("SELECT * FROM %s WHERE t_id = $1", configs.BotUserTable)
+	err := configs.DB.Get(&user, query, Id)
+	if err != nil {
+		return false
+	}
+	return true
 }
