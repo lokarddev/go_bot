@@ -1,6 +1,7 @@
 package services
 
 import (
+	"GoBot/models"
 	"GoBot/pkg"
 	"GoBot/pkg/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -15,6 +16,13 @@ type ContactService struct {
 func (s *ContactService) CheckContact() {
 	// TODO: implement checking of user in base, Only registered by staff or superuser have an access to bot.
 	err := s.Repo.SetUser(s.Ctx)
+	if err != nil {
+		return
+	}
+	user, _ := repository.GetUser(s.Ctx)
+	state := models.State{Current: pkg.StatePosition["Menu"]}
+
+	err = repository.SetState(user, state)
 	if err != nil {
 		return
 	}

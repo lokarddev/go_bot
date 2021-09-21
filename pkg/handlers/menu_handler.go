@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"GoBot/models"
 	"GoBot/pkg"
+	"GoBot/pkg/repository"
 	services "GoBot/pkg/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
@@ -18,22 +20,54 @@ func (h *MenuHandler) StartHandler() {
 		switch h.Ctx.Message.Text {
 		case pkg.MyTasksKey:
 			service.MyTasksService()
+			state := models.State{Current: pkg.StatePosition["MyTasks"]}
+			err := repository.SetState(h.Ctx, state)
+			if err != nil {
+				logrus.Error(err)
+			}
 		case pkg.AllTasksKey:
 			service.AllTasksService()
+			state := models.State{Current: pkg.StatePosition["AllTasks"]}
+			err := repository.SetState(h.Ctx, state)
+			if err != nil {
+				logrus.Error(err)
+			}
 		case pkg.DashboardKey:
 			service.DashboardService()
+			state := models.State{Current: pkg.StatePosition["Dashboard"]}
+			err := repository.SetState(h.Ctx, state)
+			if err != nil {
+				logrus.Error(err)
+			}
 		}
 	}
 }
 
 func (h *MenuHandler) triggerHandler(ctx *tgbotapi.Update) bool {
-	switch pkg.MenuPermissions[ctx.Message.Text] {
-	case "":
-		logrus.Error(pkg.UnavailableInputMessage)
-		pkg.UnavailableInput(h.Bot, h.Ctx)
+	ValidState := models.State{Current: pkg.StatePosition["Menu"]}
+
+	user, err := repository.GetUser(ctx)
+	if err != nil {
+		logrus.Error(err)
 		return false
-	default:
-		return true
+	}
+	state, err := repository.GetState(user)
+	if err != nil {
+		logrus.Error(err)
+		return false
+	}
+	valid, err := repository.IsValid(state, ValidState)
+	if valid {
+		switch pkg.MenuPermissions[ctx.Message.Text] {
+		case "":
+			logrus.Error(pkg.UnavailableInputMessage)
+			pkg.UnavailableInput(h.Bot, h.Ctx)
+			return false
+		default:
+			return true
+		}
+	} else {
+		return false
 	}
 }
 

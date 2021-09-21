@@ -30,10 +30,17 @@ func (r *StartRepository) SetUser(ctx *tgbotapi.Update) error {
 				return errTx
 			}
 			return err
-		}
-		errComm := tx.Commit()
-		if errComm != nil {
-			return errComm
+		} else {
+			query = fmt.Sprintf("UPDATE %s SET first_name=$1, last_name=$2, t_id=$3, phone=$4 WHERE bot_user_id=$5", configs.BotUserTable)
+			_, err = tx.Exec(query, ctx.Message.Contact.FirstName, ctx.Message.Contact.LastName, ctx.Message.Contact.UserID, ctx.Message.Contact.PhoneNumber)
+			if err != nil {
+				logrus.Error(err)
+				return err
+			}
+			err = tx.Commit()
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
