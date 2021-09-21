@@ -8,9 +8,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func IsValid(userState, validState models.State) (bool, error) {
-
-	return true, nil
+func IsValid(userState, validState models.State) bool {
+	if userState.Current == validState.Current {
+		return true
+	}
+	return false
 }
 
 func GetState(user models.BotUser) (models.State, error) {

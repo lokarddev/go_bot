@@ -56,8 +56,7 @@ func (h *MenuHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 			logrus.Error(err)
 			return false
 		}
-		valid, err := repository.IsValid(state, ValidState)
-		if valid {
+		if repository.IsValid(state, ValidState) {
 			switch pkg.MenuPermissions[ctx.Message.Text] {
 			case "":
 				return false

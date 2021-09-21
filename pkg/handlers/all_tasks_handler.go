@@ -14,12 +14,23 @@ type AllTasksHandler struct {
 }
 
 func (h *AllTasksHandler) StartHandler() {
-
+	if h.triggerHandler(h.Ctx) {
+		//service := services.MyTasksService{Bot: h.Bot, Ctx: h.Ctx}
+		switch h.Ctx.Message.Text {
+		case pkg.BackKey:
+			pkg.BackButtonAction(h.Bot, h.Ctx)
+			state := models.State{Current: pkg.StatePosition["Menu"]}
+			err := repository.SetState(h.Ctx, state)
+			if err != nil {
+				logrus.Error(err)
+			}
+		}
+	}
 }
 
 func (h *AllTasksHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 	ValidState := models.State{Current: pkg.StatePosition["AllTasks"]}
-	if ctx.Message.Contact != nil {
+	if repository.UserExists(ctx) == true {
 		user, err := repository.GetUser(ctx)
 		if err != nil {
 			logrus.Error(err)
@@ -30,8 +41,7 @@ func (h *AllTasksHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 			logrus.Error(err)
 			return false
 		}
-		valid, err := repository.IsValid(state, ValidState)
-		if valid {
+		if repository.IsValid(state, ValidState) {
 			switch pkg.AllTasksPermissions[ctx.Message.Text] {
 			case "":
 				return false
