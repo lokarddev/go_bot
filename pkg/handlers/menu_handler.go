@@ -16,7 +16,11 @@ type MenuHandler struct {
 
 func (h *MenuHandler) StartHandler() {
 	if h.triggerHandler(h.Ctx) {
-		service := services.MenuService{Bot: h.Bot, Ctx: h.Ctx}
+		service := services.MenuService{
+			Bot: h.Bot,
+			Ctx: h.Ctx,
+			DB:  repository.NewMenuRepository()}
+
 		switch h.Ctx.Message.Text {
 		case pkg.MyTasksKey:
 			service.MyTasksService()
@@ -45,17 +49,8 @@ func (h *MenuHandler) StartHandler() {
 
 func (h *MenuHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 	ValidState := models.State{Current: pkg.StatePosition["Menu"]}
-	if repository.UserExists(ctx) == true {
-		user, err := repository.GetUser(ctx)
-		if err != nil {
-			logrus.Error(err)
-			return false
-		}
-		state, err := repository.GetState(user)
-		if err != nil {
-			logrus.Error(err)
-			return false
-		}
+	state, success := PreProcess(ctx)
+	if success {
 		if repository.IsValid(state, ValidState) {
 			switch pkg.MenuPermissions[ctx.Message.Text] {
 			case "":

@@ -15,7 +15,11 @@ type AllTasksHandler struct {
 
 func (h *AllTasksHandler) StartHandler() {
 	if h.triggerHandler(h.Ctx) {
-		//service := services.MyTasksService{Bot: h.Bot, Ctx: h.Ctx}
+		//service := services.AllTasksService{
+		//	Bot: h.Bot,
+		//	Ctx: h.Ctx,
+		//	DB: repository.NewAllTasksRepository()}
+
 		switch h.Ctx.Message.Text {
 		case pkg.BackKey:
 			pkg.BackButtonAction(h.Bot, h.Ctx)
@@ -57,4 +61,23 @@ func (h *AllTasksHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 
 func NewAllTasksHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *AllTasksHandler {
 	return &AllTasksHandler{Bot: bot, Ctx: ctx}
+}
+
+type AllTasksCallbackHandler struct {
+	Bot *tgbotapi.BotAPI
+	Ctx *tgbotapi.Update
+}
+
+func (h *AllTasksCallbackHandler) StartHandler() {
+
+}
+
+func (h *AllTasksCallbackHandler) triggerHandler(ctx *tgbotapi.Update) bool {
+	return true
+}
+
+func NewAllTasksCallbackHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *AllTasksCallbackHandler {
+	return &AllTasksCallbackHandler{
+		Bot: bot,
+		Ctx: ctx}
 }

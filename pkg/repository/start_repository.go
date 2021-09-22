@@ -3,7 +3,6 @@ package repository
 import (
 	"GoBot/configs"
 	"GoBot/models"
-	"GoBot/pkg"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jmoiron/sqlx"
@@ -21,11 +20,10 @@ func (r *StartRepository) SetUser(ctx *tgbotapi.Update) error {
 		logrus.Error(err)
 		return err
 	}
-	validPhone := pkg.ValidPhone(ctx.Message.Contact.PhoneNumber)
 	query := fmt.Sprintf("SELECT * FROM %s WHERE phone=$1", configs.BotUserTable)
-	if err = r.DB.Get(&user, query, validPhone); err != nil {
+	if err = r.DB.Get(&user, query, &ctx.Message.Contact.PhoneNumber); err != nil {
 		query = fmt.Sprintf("INSERT INTO %s (phone) VALUES ($1)", configs.BotUserTable)
-		_, err = tx.Exec(query, &validPhone)
+		_, err = tx.Exec(query, &ctx.Message.Contact.PhoneNumber)
 		if err != nil {
 			errTx := tx.Rollback()
 			if errTx != nil {
@@ -34,7 +32,7 @@ func (r *StartRepository) SetUser(ctx *tgbotapi.Update) error {
 			return err
 		} else {
 			query = fmt.Sprintf("UPDATE %s SET first_name=$1, last_name=$2, t_id=$3, phone=$4 WHERE phone=$5", configs.BotUserTable)
-			_, err = tx.Exec(query, ctx.Message.Contact.FirstName, ctx.Message.Contact.LastName, ctx.Message.Contact.UserID, &validPhone, &validPhone)
+			_, err = tx.Exec(query, ctx.Message.Contact.FirstName, ctx.Message.Contact.LastName, ctx.Message.Contact.UserID, &ctx.Message.Contact.PhoneNumber, &ctx.Message.Contact.PhoneNumber)
 			if err != nil {
 				logrus.Error(err)
 				return err

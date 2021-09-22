@@ -2,6 +2,7 @@ package services
 
 import (
 	"GoBot/pkg"
+	"GoBot/pkg/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
 )
@@ -9,6 +10,7 @@ import (
 type MenuService struct {
 	Bot *tgbotapi.BotAPI
 	Ctx *tgbotapi.Update
+	DB  *repository.MenuRepository
 }
 
 func (s *MenuService) AllTasksService() {
@@ -40,9 +42,16 @@ func (s *MenuService) AllTasksService() {
 func (s *MenuService) MyTasksService() {
 	message := tgbotapi.NewMessage(s.Ctx.Message.Chat.ID, "Your tasks")
 	inline := tgbotapi.NewMessage(s.Ctx.Message.Chat.ID, "TaskList")
-	inline.BaseChat.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Test all task", "wq")))
+
+	baseRecords := []string{"record1", "record2"}
+
+	var buttons [][]tgbotapi.InlineKeyboardButton
+
+	for _, value := range baseRecords {
+		butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData("Test all task", value))
+		buttons = append(buttons, butt)
+	}
+	inline.BaseChat.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(buttons...)
 	_, err := s.Bot.Send(inline)
 	if err != nil {
 		return

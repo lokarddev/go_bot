@@ -4,6 +4,7 @@ import (
 	"GoBot/models"
 	"GoBot/pkg"
 	"GoBot/pkg/repository"
+	"GoBot/pkg/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
 )
@@ -30,17 +31,8 @@ func (h *MyTasksHandler) StartHandler() {
 
 func (h *MyTasksHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 	ValidState := models.State{Current: pkg.StatePosition["MyTasks"]}
-	if repository.UserExists(ctx) == true {
-		user, err := repository.GetUser(ctx)
-		if err != nil {
-			logrus.Error(err)
-			return false
-		}
-		state, err := repository.GetState(user)
-		if err != nil {
-			logrus.Error(err)
-			return false
-		}
+	state, success := PreProcess(ctx)
+	if success {
 		if repository.IsValid(state, ValidState) {
 			switch pkg.MyTasksPermissions[ctx.Message.Text] {
 			case "":
@@ -57,6 +49,38 @@ func (h *MyTasksHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 
 func NewMyTasksHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *MyTasksHandler {
 	return &MyTasksHandler{
+		Bot: bot,
+		Ctx: ctx}
+}
+
+type MyTasksCallbackHandler struct {
+	Bot *tgbotapi.BotAPI
+	Ctx *tgbotapi.Update
+}
+
+func (h *MyTasksCallbackHandler) StartHandler() {
+	if h.triggerHandler(h.Ctx) {
+		service := services.MyTasksCallbackService{
+			Bot: h.Bot,
+			Ctx: h.Ctx,
+			DB:  repository.NewMyTasksRepository()}
+		service.ProcessCallback()
+	}
+}
+
+func (h *MyTasksCallbackHandler) triggerHandler(ctx *tgbotapi.Update) bool {
+	ValidState := models.State{Current: pkg.StatePosition["MyTasks"]}
+	state, success := PreProcess(ctx)
+	if success {
+		if !repository.IsValid(state, ValidState) {
+			return false
+		}
+	}
+	return true
+}
+
+func NewMyTasksCallbackHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *MyTasksCallbackHandler {
+	return &MyTasksCallbackHandler{
 		Bot: bot,
 		Ctx: ctx}
 }

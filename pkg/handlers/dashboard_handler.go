@@ -29,17 +29,8 @@ func (h *DashboardHandler) StartHandler() {
 
 func (h *DashboardHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 	ValidState := models.State{Current: pkg.StatePosition["Dashboard"]}
-	if repository.UserExists(ctx) == true {
-		user, err := repository.GetUser(ctx)
-		if err != nil {
-			logrus.Error(err)
-			return false
-		}
-		state, err := repository.GetState(user)
-		if err != nil {
-			logrus.Error(err)
-			return false
-		}
+	state, success := PreProcess(ctx)
+	if success {
 		if repository.IsValid(state, ValidState) {
 			switch pkg.DashbaordPermissions[ctx.Message.Text] {
 			case "":

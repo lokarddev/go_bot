@@ -1,0 +1,1 @@
+alter table task add column bot_user_id int constraint id references bot_user;
