@@ -3,6 +3,7 @@ package repository
 import (
 	"GoBot/configs"
 	"GoBot/models"
+	"GoBot/pkg"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
@@ -27,8 +28,15 @@ func (r *MenuRepository) GetMyTasks(userID int) *[]models.Task {
 	return &tasks
 }
 
-func (r *MenuRepository) GetAllTasks() {
-
+func (r *MenuRepository) GetAllTasks() *[]models.Task {
+	var tasks []models.Task
+	query := fmt.Sprintf("SELECT id, name, description, status, created_at, updated_at FROM %s WHERE status=$1", configs.TaskTable)
+	err := r.DB.Select(&tasks, query, pkg.TaskPool)
+	if err != nil {
+		logrus.Error(err)
+		return nil
+	}
+	return &tasks
 }
 
 func NewMenuRepository() *MenuRepository {

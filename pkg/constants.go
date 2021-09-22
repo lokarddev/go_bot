@@ -2,6 +2,15 @@ package pkg
 
 import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
+// task status list
+const (
+	Pending    = "pending"
+	InProgress = "in_progress"
+	TaskPool   = "task_pool"
+	Done       = "done"
+	Paused     = "paused"
+)
+
 // keys text
 const (
 	StartKey = "/start"

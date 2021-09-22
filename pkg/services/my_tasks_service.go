@@ -25,7 +25,6 @@ func (s *MyTasksService) MyTasksService() {
 }
 
 func (s *MyTasksCallbackService) ProcessCallback() {
-	fmt.Println(s.Ctx.CallbackQuery.Data)
 	taskId, _ := strconv.Atoi(s.Ctx.CallbackQuery.Data)
 	task := s.DB.GetTask(taskId)
 	msgText := fmt.Sprintf("Task: %s\n Description: %s", task.Name, task.Description)
