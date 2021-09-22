@@ -27,7 +27,7 @@ func GetState(user models.BotUser) (models.State, error) {
 }
 
 func SetState(ctx *tgbotapi.Update, state models.State) error {
-	user, err := GetUser(ctx)
+	user, err := GetUser(ctx.Message.From.ID)
 	var newState models.State
 	tx, err := configs.DB.Begin()
 	if err != nil {
@@ -58,11 +58,10 @@ func SetState(ctx *tgbotapi.Update, state models.State) error {
 	return nil
 }
 
-func GetUser(ctx *tgbotapi.Update) (models.BotUser, error) {
+func GetUser(ID int) (models.BotUser, error) {
 	var user models.BotUser
-	Id := ctx.Message.From.ID
 	query := fmt.Sprintf("SELECT * FROM %s WHERE t_id = $1", configs.BotUserTable)
-	err := configs.DB.Get(&user, query, Id)
+	err := configs.DB.Get(&user, query, ID)
 	if err != nil {
 		logrus.Error(err)
 		return user, err

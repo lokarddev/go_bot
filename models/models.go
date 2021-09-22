@@ -19,6 +19,7 @@ type Task struct {
 	Status      string    `json:"status" db:"status"`
 	Created     time.Time `json:"created_at" db:"created_at"`
 	Updated     time.Time `json:"updated_at" db:"updated_at"`
+	BotUserId   int       `json:"bot_user_id" db:"bot_user_id"`
 }
 
 type DashBoard struct {

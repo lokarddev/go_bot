@@ -35,7 +35,7 @@ func (h *AllTasksHandler) StartHandler() {
 func (h *AllTasksHandler) triggerHandler(ctx *tgbotapi.Update) bool {
 	ValidState := models.State{Current: pkg.StatePosition["AllTasks"]}
 	if repository.UserExists(ctx) == true {
-		user, err := repository.GetUser(ctx)
+		user, err := repository.GetUser(ctx.Message.From.ID)
 		if err != nil {
 			logrus.Error(err)
 			return false

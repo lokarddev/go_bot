@@ -5,6 +5,7 @@ import (
 	"GoBot/pkg/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
+	"strconv"
 )
 
 type MenuService struct {
@@ -43,24 +44,22 @@ func (s *MenuService) MyTasksService() {
 	message := tgbotapi.NewMessage(s.Ctx.Message.Chat.ID, "Your tasks")
 	inline := tgbotapi.NewMessage(s.Ctx.Message.Chat.ID, "TaskList")
 
-	baseRecords := []string{"record1", "record2"}
-
+	taskList := s.DB.GetMyTasks(s.Ctx.Message.From.ID)
 	var buttons [][]tgbotapi.InlineKeyboardButton
-
-	for _, value := range baseRecords {
-		butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData("Test all task", value))
+	for _, task := range *taskList {
+		taskID := strconv.Itoa(task.ID)
+		butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData(task.Name, taskID))
 		buttons = append(buttons, butt)
 	}
 	inline.BaseChat.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(buttons...)
 	_, err := s.Bot.Send(inline)
 	if err != nil {
-		return
+		logrus.Error(err)
 	}
-
 	message.BaseChat.ReplyMarkup = pkg.MyTasksKeyboard
 	_, err = s.Bot.Send(message)
 	if err != nil {
-		return
+		logrus.Error(err)
 	}
 }
 

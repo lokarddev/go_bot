@@ -16,7 +16,6 @@ type MyTasksHandler struct {
 
 func (h *MyTasksHandler) StartHandler() {
 	if h.triggerHandler(h.Ctx) {
-		//service := services.MyTasksService{Bot: h.Bot, Ctx: h.Ctx}
 		switch h.Ctx.Message.Text {
 		case pkg.BackKey:
 			pkg.BackButtonAction(h.Bot, h.Ctx)
@@ -69,13 +68,6 @@ func (h *MyTasksCallbackHandler) StartHandler() {
 }
 
 func (h *MyTasksCallbackHandler) triggerHandler(ctx *tgbotapi.Update) bool {
-	ValidState := models.State{Current: pkg.StatePosition["MyTasks"]}
-	state, success := PreProcess(ctx)
-	if success {
-		if !repository.IsValid(state, ValidState) {
-			return false
-		}
-	}
 	return true
 }
 

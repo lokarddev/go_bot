@@ -51,7 +51,7 @@ func WebhookHandler(c *gin.Context) {
 func PreProcess(ctx *tgbotapi.Update) (models.State, bool) {
 	var state models.State
 	if repository.UserExists(ctx) == true {
-		user, err := repository.GetUser(ctx)
+		user, err := repository.GetUser(ctx.Message.From.ID)
 		if err != nil {
 			logrus.Error(err)
 			return state, false
