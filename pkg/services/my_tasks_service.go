@@ -6,6 +6,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"strconv"
+	"strings"
 )
 
 type MyTasksService struct {
@@ -25,8 +26,9 @@ func (s *MyTasksService) MyTasksService() {
 }
 
 func (s *MyTasksCallbackService) ProcessCallback() {
-	taskId, _ := strconv.Atoi(s.Ctx.CallbackQuery.Data)
-	task := s.DB.GetTask(taskId)
+	rawId := strings.Split(s.Ctx.CallbackQuery.Data, " ")[1]
+	taskId, _ := strconv.Atoi(rawId)
+	task := repository.GetTask(taskId)
 	msgText := fmt.Sprintf("Task: %s\n Description: %s", task.Name, task.Description)
 	msg := tgbotapi.NewMessage(s.Ctx.CallbackQuery.Message.Chat.ID, msgText)
 	msg.BaseChat.ReplyMarkup = pkg.TaskMyKeyboard

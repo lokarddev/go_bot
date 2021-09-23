@@ -7,6 +7,7 @@ import (
 	"GoBot/pkg/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
+	"strings"
 )
 
 type MyTasksHandler struct {
@@ -68,7 +69,11 @@ func (h *MyTasksCallbackHandler) StartHandler() {
 }
 
 func (h *MyTasksCallbackHandler) triggerHandler(ctx *tgbotapi.Update) bool {
-	return true
+	data := strings.Split(ctx.CallbackQuery.Data, " ")[0]
+	if data == pkg.MyTasksCallback {
+		return true
+	}
+	return false
 }
 
 func NewMyTasksCallbackHandler(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *MyTasksCallbackHandler {

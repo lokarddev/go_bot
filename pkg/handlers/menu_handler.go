@@ -43,6 +43,13 @@ func (h *MenuHandler) StartHandler() {
 			if err != nil {
 				logrus.Error(err)
 			}
+		case pkg.BackKey:
+			pkg.BackButtonAction(h.Bot, h.Ctx)
+			state := models.State{Current: pkg.StatePosition["Menu"]}
+			err := repository.SetState(h.Ctx, state)
+			if err != nil {
+				logrus.Error(err)
+			}
 		}
 	}
 }

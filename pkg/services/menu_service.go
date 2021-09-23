@@ -23,7 +23,8 @@ func (s *MenuService) AllTasksService() {
 		var buttons [][]tgbotapi.InlineKeyboardButton
 		for _, task := range *taskList {
 			taskID := strconv.Itoa(task.ID)
-			butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData(task.Name, taskID))
+			data := pkg.AllTasksCallback + " " + taskID
+			butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData(task.Name, data))
 			buttons = append(buttons, butt)
 		}
 		inline.BaseChat.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(buttons...)
@@ -48,7 +49,8 @@ func (s *MenuService) MyTasksService() {
 		var buttons [][]tgbotapi.InlineKeyboardButton
 		for _, task := range *taskList {
 			taskID := strconv.Itoa(task.ID)
-			butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData(task.Name, taskID))
+			data := pkg.AllTasksCallback + " " + taskID
+			butt := tgbotapi.NewInlineKeyboardRow(tgbotapi.NewInlineKeyboardButtonData(task.Name, data))
 			buttons = append(buttons, butt)
 		}
 		inline.BaseChat.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(buttons...)

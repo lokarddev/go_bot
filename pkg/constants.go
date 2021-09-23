@@ -2,6 +2,12 @@ package pkg
 
 import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
+// callback signatures
+const (
+	MyTasksCallback  = "MyTasks"
+	AllTasksCallback = "AllTasks"
+)
+
 // task status list
 const (
 	Pending    = "pending"
@@ -46,6 +52,9 @@ var StatePosition = map[string]string{
 	"AllTasks":     "AllTasks",
 	"TaskAll":      "TaskAll",
 	"TaskMy":       "TaskMy",
+
+	"AddStart":  "AddStart",
+	"AddFinish": "AddFinish",
 }
 
 // some common keyboards
