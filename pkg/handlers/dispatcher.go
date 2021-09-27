@@ -45,6 +45,8 @@ func InitHandlerDispatcher(bot *tgbotapi.BotAPI, ctx *tgbotapi.Update) *MessageD
 	dispatcher.attach(NewDashboardHandler(bot, ctx))
 	dispatcher.attach(NewAllTasksHandler(bot, ctx))
 	dispatcher.attach(NewMyTasksHandler(bot, ctx))
+	dispatcher.attach(NewAddTasksHandler(bot, ctx))
+	dispatcher.attach(NewAddTasksFinishHandler(bot, ctx))
 	return dispatcher
 }
 

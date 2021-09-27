@@ -53,8 +53,8 @@ var StatePosition = map[string]string{
 	"TaskAll":      "TaskAll",
 	"TaskMy":       "TaskMy",
 
-	"AddStart":  "AddStart",
-	"AddFinish": "AddFinish",
+	"AddStep1": "AddStep1",
+	"AddStep2": "AddStep2",
 }
 
 // some common keyboards
@@ -98,3 +98,11 @@ var (
 		),
 	)
 )
+
+type TaskCreation struct {
+	Name        string
+	Description string
+}
+
+// TaskMap A state like object for creating tasks step by step
+var TaskMap = make(map[int]TaskCreation)

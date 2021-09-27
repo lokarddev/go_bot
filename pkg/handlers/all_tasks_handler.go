@@ -31,8 +31,8 @@ func (h *AllTasksHandler) StartHandler() {
 				logrus.Error(err)
 			}
 		case pkg.AddTaskKey:
-			service.AllTasksAddStart()
-			state := models.State{Current: pkg.StatePosition["AddStart"]}
+			service.AllTasksAddStep1()
+			state := models.State{Current: pkg.StatePosition["AddStep1"]}
 			err := repository.SetState(h.Ctx, state)
 			if err != nil {
 				logrus.Error(err)
